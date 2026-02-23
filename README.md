@@ -1,32 +1,63 @@
 # blackroad-route-optimizer
 
-[![GitHub](https://img.shields.io/badge/GitHub-BlackRoad-OS-purple?style=for-the-badge&logo=github)](https://github.com/BlackRoad-OS/blackroad-route-optimizer)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](https://github.com/BlackRoad-OS/blackroad-route-optimizer)
-[![BlackRoad](https://img.shields.io/badge/BlackRoad-OS-black?style=for-the-badge)](https://blackroad.io)
+> Delivery route optimization using nearest-neighbor heuristic + 2-opt improvement + Or-opt.
 
-# 🖤🛣️ BlackRoad Route Optimizer
+## Features
 
-Part of the BlackRoad Product Empire - 350+ enterprise solutions
+- **Nearest-neighbor** greedy construction
+- **2-opt local search** improvement
+- **Or-opt** single-city relocation
+- **Haversine distances** for real-world lat/lon coordinates
+- **Multi-vehicle** support with capacity tracking
+- **Cost estimation** (fuel cost per km)
+- **Algorithm comparison** report
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-./blackroad-route-optimizer.sh
+pip install -e .
+
+# Setup locations
+python src/route_optimizer.py add-location Depot 40.7128 -74.0060 --depot
+python src/route_optimizer.py add-location CustomerA 40.730 -74.010
+python src/route_optimizer.py add-location CustomerB 40.720 -73.990
+
+# Register vehicle
+python src/route_optimizer.py add-vehicle Truck1 1000 --speed 60
+
+# Add deliveries
+python src/route_optimizer.py add-delivery CustomerA 50
+python src/route_optimizer.py add-delivery CustomerB 30
+
+# Optimize route
+python src/route_optimizer.py optimize Truck1
+
+# Compare algorithms
+python src/route_optimizer.py compare
 ```
 
-## 🎨 BlackRoad Design System
+## CLI Reference
 
-- **Hot Pink**: #FF1D6C
-- **Amber**: #F5A623  
-- **Electric Blue**: #2979FF
-- **Violet**: #9C27B0
+| Command | Description |
+|---------|-------------|
+| `add-location NAME LAT LON [--depot]` | Register a location |
+| `add-delivery LOCATION WEIGHT [--priority]` | Add a delivery |
+| `add-vehicle NAME CAPACITY [--speed] [--fuel-cost]` | Register a vehicle |
+| `optimize VEHICLE` | Compute optimized route |
+| `compare` | Compare NN vs 2-opt distances |
+| `stats ROUTE_ID` | Show route statistics |
+| `list-routes` | List all computed routes |
+| `list-locations` | List all locations |
 
-## 📚 Documentation
+## Algorithms
 
-Full docs: https://docs.blackroad.io
+- **Nearest-Neighbor** — O(n²) greedy TSP heuristic
+- **2-opt** — iterative edge-swap improvement; typically 5–20% reduction
+- **Or-opt** — relocates individual stops for further gains
+- **Haversine** — spherical earth great-circle distance
 
-## 🖤 BlackRoad Empire
+## Development
 
-Part of 350+ products across 46 categories. Built with ∞ vision.
-
-**BlackRoad OS, Inc.** | Built with Claude
+```bash
+pytest tests/ -v --cov=src
+```
